@@ -30,7 +30,7 @@ private:
     float gravity;
     int groundHeight;
     // movement speed
-    float movementSpeed = 8.0f;
+    float movementSpeed = 0.1f;
     State state;
 };
 

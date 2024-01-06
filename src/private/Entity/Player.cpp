@@ -5,21 +5,24 @@ Player::Player(float Startx, float Starty, int groundHeight) : velocityY(0), gra
     texture.loadFromFile("resources/mario.png");
     sprite.setTexture(texture);
     sprite.setPosition(Startx, Starty);
+    state = IDLE;
 }
 
 void Player::update()
 {
-    // Apply gravity
+    sprite.move(0, velocityY);
     velocityY += gravity;
 
-    // Move the player
-    sprite.move(0, velocityY);
-
-    // Check if the player is on the ground
     if (isOnGround())
     {
         sprite.setPosition(sprite.getPosition().x, groundHeight);
         velocityY = 0;
+        sprite.move(velocityX, 0);
+        state = IDLE;
+    }
+    else
+    {
+        sprite.move(velocityX, 0);
     }
 }
 
@@ -28,17 +31,21 @@ void Player::jump()
     if (isOnGround())
     {
         velocityY = -0.2f;
+        // sprite.move(0, velocityY);
+        state = JUMPING;
     }
 }
 
 void Player::moveLeft()
 {
+
     velocityX = -movementSpeed;
     sprite.move(velocityX, 0);
 }
 
 void Player::moveRight()
 {
+
     velocityX = movementSpeed;
     sprite.move(velocityX, 0);
 }
@@ -67,6 +74,18 @@ void Player::handleInput(const sf::Event &event)
             break;
         case sf::Keyboard::Right:
             moveRight();
+            break;
+        default:
+            break;
+        }
+    }
+    else if (event.type == sf::Event::KeyReleased)
+    {
+        switch (event.key.code)
+        {
+        case sf::Keyboard::Left:
+        case sf::Keyboard::Right:
+            velocityX = 0;
             break;
         default:
             break;
