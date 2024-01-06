@@ -1,39 +1,81 @@
 #include <SFML/Graphics.hpp>
 #include "Animation/Frame.h"
+#include "Entity/Player.h"
 
-int main()
+class Game
 {
-    // Create a window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Hello World");
+private:
+    sf::RenderWindow window;
+    Player player;
+    const int WINDOW_WIDTH = 800;
+    const int WINDOW_HEIGHT = 600;
 
-    // Create a text object
-    sf::Font font;
-    Frame frame;
+public:
+    Game() : window(sf::VideoMode(1800, 1000), "Mario Game"), player(100.0f, 400.0f, 400) {}
 
-    if (!font.loadFromFile("arial/arial.ttf")) // You need to have a font file (arial.ttf) in the same directory as your source code
-    {
-        return EXIT_FAILURE;
-    }
-
-    sf::Text text("Hello, World!", font, 50);
-    text.setFillColor(sf::Color::White);
-    text.setPosition(250, 250);
-
-    frame.draw();
-
-    while (window.isOpen())
+    void handleEvents()
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+            }
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Space)
+                {
+                    player.jump();
+                }
+                else if (event.key.code == sf::Keyboard::Left)
+                {
+                    player.moveLeft();
+                }
+                else if (event.key.code == sf::Keyboard::Right)
+                {
+                    player.moveRight();
+                }
+                else if (event.key.code == sf::Keyboard::Escape)
+                {
+                    window.close();
+                }
+            }
         }
+    }
 
+    void update()
+    {
+        player.update();
+    }
+
+    void render()
+    {
         window.clear();
-        window.draw(text);
+        window.draw(player.getSprite());
         window.display();
     }
+
+    bool isRunning() const
+    {
+        return window.isOpen();
+    }
+
+    void run()
+    {
+        while (isRunning())
+        {
+            handleEvents();
+            update();
+            render();
+        }
+    }
+};
+
+int main()
+{
+    Game game;
+    game.run();
 
     return 0;
 }
