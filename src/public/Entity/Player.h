@@ -2,6 +2,14 @@
 #define PLAYER_H
 #include <SFML/Graphics.hpp>
 
+enum State
+{
+    IDLE,
+    RUNNING,
+    JUMPING,
+    FALLING
+};
+
 class Player
 {
 public:
@@ -10,7 +18,9 @@ public:
     void jump();
     void moveLeft();
     void moveRight();
+    void handleInput(const sf::Event &event);
     bool isOnGround();
+
     sf::Sprite getSprite(); // Added 'sf::' namespace qualifier
 
 private:
@@ -21,6 +31,7 @@ private:
     int groundHeight;
     // movement speed
     float movementSpeed = 8.0f;
+    State state;
 };
 
 #endif // PLAYER_H

@@ -18,29 +18,16 @@ public:
         sf::Event event;
         while (window.pollEvent(event))
         {
+
             if (event.type == sf::Event::Closed)
             {
                 window.close();
             }
-            else if (event.type == sf::Event::KeyPressed)
+            else if (event.key.code == sf::Keyboard::Escape)
             {
-                if (event.key.code == sf::Keyboard::Space)
-                {
-                    player.jump();
-                }
-                else if (event.key.code == sf::Keyboard::Left)
-                {
-                    player.moveLeft();
-                }
-                else if (event.key.code == sf::Keyboard::Right)
-                {
-                    player.moveRight();
-                }
-                else if (event.key.code == sf::Keyboard::Escape)
-                {
-                    window.close();
-                }
+                window.close();
             }
+            player.handleInput(event);
         }
     }
 
