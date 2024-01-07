@@ -1,4 +1,5 @@
 #include "Entity/Player.h"
+#include <iostream>
 
 Player::Player(float Startx, float Starty, int groundHeight) : velocityY(0), gravity(0.00005f), groundHeight(groundHeight)
 {
@@ -18,9 +19,8 @@ void Player::update()
         sprite.setPosition(sprite.getPosition().x, groundHeight);
         velocityY = 0;
         sprite.move(velocityX, 0);
-        state = IDLE;
     }
-    else
+    else // in air
     {
         sprite.move(velocityX, 0);
     }
@@ -31,7 +31,6 @@ void Player::jump()
     if (isOnGround())
     {
         velocityY = -0.2f;
-        // sprite.move(0, velocityY);
         state = JUMPING;
     }
 }
@@ -40,14 +39,12 @@ void Player::moveLeft()
 {
 
     velocityX = -movementSpeed;
-    sprite.move(velocityX, 0);
 }
 
 void Player::moveRight()
 {
 
     velocityX = movementSpeed;
-    sprite.move(velocityX, 0);
 }
 
 bool Player::isOnGround()
@@ -60,35 +57,30 @@ sf::Sprite Player::getSprite()
     return sprite;
 }
 
-void Player::handleInput(const sf::Event &event)
+void Player::handleContinuousInput(std::map<sf::Keyboard::Key, bool> keys)
 {
-    if (event.type == sf::Event::KeyPressed)
+    if (keys[sf::Keyboard::Left])
     {
-        switch (event.key.code)
+        moveLeft();
+        if (keys[sf::Keyboard::Space]) // If Space is also being pressed
         {
-        case sf::Keyboard::Space:
             jump();
-            break;
-        case sf::Keyboard::Left:
-            moveLeft();
-            break;
-        case sf::Keyboard::Right:
-            moveRight();
-            break;
-        default:
-            break;
         }
     }
-    else if (event.type == sf::Event::KeyReleased)
+    else if (keys[sf::Keyboard::Right])
     {
-        switch (event.key.code)
+        moveRight();
+        if (keys[sf::Keyboard::Space]) // If Space is also being pressed
         {
-        case sf::Keyboard::Left:
-        case sf::Keyboard::Right:
-            velocityX = 0;
-            break;
-        default:
-            break;
+            jump();
         }
+    }
+    else if (keys[sf::Keyboard::Space])
+    {
+        jump();
+    }
+    else
+    {
+        velocityX = 0;
     }
 }

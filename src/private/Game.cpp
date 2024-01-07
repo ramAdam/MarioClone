@@ -7,6 +7,8 @@ class Game
 private:
     sf::RenderWindow window;
     Player player;
+    std::map<sf::Keyboard::Key, bool> keys;
+
     const int WINDOW_WIDTH = 800;
     const int WINDOW_HEIGHT = 600;
 
@@ -19,21 +21,26 @@ public:
         while (window.pollEvent(event))
         {
 
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::KeyPressed)
             {
-                window.close();
+                keys[event.key.code] = true;
+
+                if (event.key.code == sf::Keyboard::Escape)
+                {
+                    window.close();
+                }
             }
-            else if (event.key.code == sf::Keyboard::Escape)
+            else if (event.type == sf::Event::KeyReleased)
             {
-                window.close();
+                keys[event.key.code] = false;
             }
-            player.handleInput(event);
         }
     }
 
     void update()
     {
         player.update();
+        player.handleContinuousInput(keys);
     }
 
     void render()

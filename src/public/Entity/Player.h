@@ -18,7 +18,7 @@ public:
     void jump();
     void moveLeft();
     void moveRight();
-    void handleInput(const sf::Event &event);
+    void handleContinuousInput(std::map<sf::Keyboard::Key, bool> keys);
     bool isOnGround();
 
     sf::Sprite getSprite(); // Added 'sf::' namespace qualifier
